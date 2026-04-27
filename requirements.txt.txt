@@ -1,0 +1,13 @@
+flask
+flask-login
+flask-sqlalchemy
+werkzeug
+scipy
+numpy
+pandas
+yfinance
+newsapi-python
+pytz
+reportlab
+gunicorn
+python-dotenv

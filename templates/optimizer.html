@@ -1,0 +1,619 @@
+{% extends "base.html" %}
+{% block title %}Portfolio Optimizer —  NextGen{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12">
+  <div class="text-center mb-10">
+    <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">Portfolio Optimizer</h1>
+    <p class="text-gray-500 dark:text-gray-400">Enter your investment details and get 3 optimized portfolios instantly</p>
+  </div>
+
+  <!-- About Panel -->
+<div class="text-right mb-8" x-data="{ open: false }">
+  <button @click="open = !open"
+          class="inline-flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">
+    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <span x-text="open ? 'Hide guide' : 'How does this work?'"></span>
+    <svg :class="open ? 'rotate-180' : ''" class="w-3 h-3 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+    </svg>
+  </button>
+
+  <div x-show="open" x-transition class="mt-4 text-left max-w-3xl mx-auto bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl p-6 shadow-sm space-y-5">
+
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-1">About this tool</p>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        This is a smart money-splitting machine. You tell it how much you have and what types of investments you're open to, and it finds the <strong class="text-gray-700 dark:text-gray-300">best possible mix</strong> using a Nobel Prize-winning method called <em>Modern Portfolio Theory (MPT)</em>. It produces <strong class="text-gray-700 dark:text-gray-300">3 ready-made portfolios</strong>  Balanced, High Return, and Low Risk so you can pick the one that fits your goals.
+      </p>
+    </div>
+
+    <div class="border-t border-gray-100 dark:border-slate-700 pt-4">
+      <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Key terms</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div class="flex gap-2">
+          <div class="w-1 rounded-full bg-indigo-300 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">Asset Class</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">A category of investment stocks, gold, crypto. Mixing them reduces overall risk.</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-1 rounded-full bg-indigo-300 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">Expected Return (%)</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">How much your money might grow per year on average, based on historical data.</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-1 rounded-full bg-indigo-300 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">Volatility (%)</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">How much the portfolio value bounces up and down. Lower = smoother ride.</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-1 rounded-full bg-indigo-300 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">Sharpe Ratio</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Return earned per unit of risk an efficiency score. Above 1.0 is excellent.</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-1 rounded-full bg-indigo-300 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">Balanced Portfolio</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">A middle-ground mix  decent returns without extreme risk. Good for first-time investors.</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-1 rounded-full bg-indigo-300 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">Projected Corpus</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">How much your investment could grow to over your chosen time period.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-100 dark:border-slate-700 pt-4">
+      <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">How to use</p>
+      <ol class="space-y-2">
+        <li class="flex gap-3 text-xs text-gray-500 dark:text-gray-400">
+          <span class="w-5 h-5 rounded-full bg-indigo-50 dark:bg-indigo-900 text-indigo-500 font-bold flex items-center justify-center flex-shrink-0">1</span>
+          <span><strong class="text-gray-600 dark:text-gray-300">Set your investment amount</strong> — drag the slider anywhere from Rs. 10,000 to Rs. 1 Crore.</span>
+        </li>
+        <li class="flex gap-3 text-xs text-gray-500 dark:text-gray-400">
+          <span class="w-5 h-5 rounded-full bg-indigo-50 dark:bg-indigo-900 text-indigo-500 font-bold flex items-center justify-center flex-shrink-0">2</span>
+          <span><strong class="text-gray-600 dark:text-gray-300">Choose your time horizon</strong> — how many years do you plan to stay invested? Longer generally means better returns.</span>
+        </li>
+        <li class="flex gap-3 text-xs text-gray-500 dark:text-gray-400">
+          <span class="w-5 h-5 rounded-full bg-indigo-50 dark:bg-indigo-900 text-indigo-500 font-bold flex items-center justify-center flex-shrink-0">3</span>
+          <span><strong class="text-gray-600 dark:text-gray-300">Select at least 2 asset classes</strong> — Equities and ETFs are on by default. Add Gold, Silver, Crypto, or Real Estate as needed.</span>
+        </li>
+        <li class="flex gap-3 text-xs text-gray-500 dark:text-gray-400">
+          <span class="w-5 h-5 rounded-full bg-indigo-50 dark:bg-indigo-900 text-indigo-500 font-bold flex items-center justify-center flex-shrink-0">4</span>
+          <span><strong class="text-gray-600 dark:text-gray-300">Click "Optimize My Portfolio"</strong> — wait ~30 seconds while the algorithm runs 1,000+ simulations.</span>
+        </li>
+        <li class="flex gap-3 text-xs text-gray-500 dark:text-gray-400">
+          <span class="w-5 h-5 rounded-full bg-indigo-50 dark:bg-indigo-900 text-indigo-500 font-bold flex items-center justify-center flex-shrink-0">5</span>
+          <span><strong class="text-gray-600 dark:text-gray-300">Review your 3 portfolios</strong> — compare the cards and the Efficient Frontier chart, then save the one you like.</span>
+        </li>
+      </ol>
+    </div>
+
+    <p class="text-xs text-gray-400 border-t border-gray-100 dark:border-slate-700 pt-3">For educational purposes only. Past returns do not guarantee future performance. Consult a SEBI-registered advisor before investing real money.</p>
+  </div>
+</div>
+  <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-8"
+       x-data="optimizerApp()">
+
+    <!-- Amount -->
+    <div class="mb-8">
+      <div class="flex justify-between mb-2">
+        <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Investment Amount</label>
+        <span class="text-sm font-bold text-indigo-600" x-text="formatAmount(amount)"></span>
+      </div>
+      <input type="range" min="10000" max="10000000" step="10000"
+             x-model="amount"
+             class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+      <div class="flex justify-between text-xs text-gray-400 mt-1">
+        <span>Rs. 10,000</span><span>Rs. 1 Crore</span>
+      </div>
+    </div>
+    <!-- Years slider — add after amount div -->
+    <div class="mb-8">
+      <div class="flex justify-between mb-2">
+        <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+          Investment Duration
+        </label>
+        <span class="text-sm font-bold text-indigo-600"
+              x-text="years + ' years'"></span>
+      </div>
+      <input type="range" min="1" max="20" step="1"
+            x-model="years"
+            class="w-full h-2 bg-gray-200 rounded-lg
+                    appearance-none cursor-pointer accent-indigo-600">
+      <div class="flex justify-between text-xs text-gray-400 mt-1">
+        <span>1 year</span>
+        <span>20 years</span>
+      </div>
+    </div>
+    <!-- Asset Classes -->
+    <div class="mb-8">
+      <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+        Select Asset Classes
+        <span class="text-xs text-gray-400 font-normal ml-1">(select at least 2)</span>
+      </label>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <template x-for="asset in assets" :key="asset.id">
+          <div @click="toggleAsset(asset.id)"
+               :class="asset.selected
+                 ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900 dark:border-indigo-400'
+                 : 'border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700'"
+               class="border-2 rounded-xl p-4 cursor-pointer transition-all select-none">
+            <div class="w-3 h-3 rounded-full mb-2 transition-colors"
+                 :style="asset.selected ? 'background:#6366f1' : 'background:#d1d5db'"></div>
+            <div class="text-sm font-semibold text-gray-800 dark:text-white" x-text="asset.name"></div>
+            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5" x-text="asset.desc"></div>
+            <div class="mt-2 flex items-center gap-1">
+              <div :class="asset.selected
+                     ? 'bg-indigo-500 border-indigo-500'
+                     : 'bg-white dark:bg-slate-600 border-gray-300 dark:border-slate-500'"
+                   class="w-4 h-4 rounded border-2 flex items-center justify-center transition-all">
+                <svg x-show="asset.selected" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+              <span class="text-xs text-gray-500 dark:text-gray-400" x-text="asset.selected ? 'Selected' : 'Click to select'"></span>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Selected summary -->
+    <div class="mb-6 p-3 bg-gray-50 dark:bg-slate-700 rounded-xl">
+      <span class="text-xs text-gray-500 dark:text-gray-400">Selected: </span>
+      <span class="text-xs font-semibold text-indigo-600"
+            x-text="selectedAssets.length === 0 ? 'None' : assets.filter(a=>a.selected).map(a=>a.name).join(', ')">
+      </span>
+    </div>
+
+    <!-- Optimize Button -->
+    <button @click="optimize()"
+            :disabled="loading || selectedAssets.length < 2"
+            :class="loading || selectedAssets.length < 2 ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90 cursor-pointer'"
+            class="w-full py-4 gradient-bg text-white font-bold rounded-xl transition-all text-lg">
+      <span x-show="!loading">Optimize My Portfolio</span>
+      <span x-show="loading" class="flex items-center justify-center gap-2">
+        <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+        </svg>
+        Optimizing... this may take 30 seconds
+      </span>
+    </button>
+
+    <!-- Error -->
+    <div x-show="error" x-text="error"
+         class="mt-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm text-center border border-red-100"></div>
+
+  </div>
+
+  <!-- Results -->
+  <div id="results-section" class="mt-12 hidden">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2 text-center">Your Optimized Portfolios</h2>
+    <p class="text-center text-gray-500 dark:text-gray-400 text-sm mb-8">
+      3 portfolios generated — each with a different risk-return profile
+    </p>
+    <div id="portfolio-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+    <div class="mt-6 text-center" id="download-report-btn" style="display:none">
+  <button onclick="openReportModal()"
+          class="px-8 py-3 gradient-bg text-white font-semibold rounded-xl hover:opacity-90 transition-opacity">
+    Download Full Report (All 3 Portfolios)
+  </button>
+</div>
+
+    <!-- Efficient Frontier -->
+    <div class="mt-8 bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700">
+      <h3 class="font-bold text-gray-800 dark:text-white mb-1">Efficient Frontier</h3>
+      <p class="text-xs text-gray-400 mb-4">
+        Each dot = 1 random portfolio. Your 3 optimized portfolios are marked above the cloud.
+      </p>
+      <canvas id="frontierChart" height="300"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Report Modal -->
+<div id="report-modal"
+     class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+  <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-sm mx-4 shadow-xl">
+    <h3 class="font-bold text-gray-800 dark:text-white text-lg mb-1">Download Client Report</h3>
+    <p class="text-xs text-gray-400 mb-5">Enter details to personalise the PDF report</p>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Client Name</label>
+        <input id="client-name" type="text" placeholder="e.g. Rahul Sharma"
+               class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600
+                      bg-gray-50 dark:bg-slate-700 text-sm text-gray-800 dark:text-white
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Advisor / Your Name</label>
+        <input id="advisor-name" type="text" placeholder="e.g. Priya Mehta"
+               class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600
+                      bg-gray-50 dark:bg-slate-700 text-sm text-gray-800 dark:text-white
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+    </div>
+
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeReportModal()"
+              class="flex-1 py-2 border border-gray-200 dark:border-slate-600 text-gray-500
+                     text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+        Cancel
+      </button>
+      <button onclick="downloadReport()"
+              class="flex-1 py-2 gradient-bg text-white text-sm font-semibold
+                     rounded-lg hover:opacity-90 transition-opacity">
+        Download PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+<style>
+  #portfolio-cards * {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #portfolio-cards {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+</style>
+<script>
+function optimizerApp() {
+  return {
+    amount: 500000,
+    loading: false,
+    error: "",
+    years: 5,
+   assets: [
+  { id: "equity",     name: "Equities",   desc: "NIFTY 500 stocks",        selected: true  },
+  { id: "gold",       name: "Gold",        desc: "GOLDBEES ETF",            selected: false },
+  { id: "silver",     name: "Silver",      desc: "SILVERBEES ETF",          selected: false },
+  { id: "etf",        name: "ETFs / MFs",  desc: "NIFTY 50 & Next 50",     selected: true  },
+  { id: "crypto",     name: "Crypto",      desc: "Bitcoin & Ethereum",      selected: false },
+  { id: "realestate", name: "Real Estate", desc: "Embassy Office REIT",     selected: false },
+  ],
+  
+    get selectedAssets() {
+      return this.assets.filter(a => a.selected).map(a => a.id);
+    },
+    formatAmount(val) {
+      if (val >= 10000000) return "Rs. " + (val/10000000).toFixed(1) + " Cr";
+      if (val >= 100000)   return "Rs. " + (val/100000).toFixed(1) + " L";
+      return "Rs. " + parseInt(val).toLocaleString("en-IN");
+    },
+    toggleAsset(id) {
+      const a = this.assets.find(x => x.id === id);
+      if (a) a.selected = !a.selected;
+    },
+    async optimize() {
+      this.error = "";
+      if (this.selectedAssets.length < 2) {
+        this.error = "Please select at least 2 asset classes.";
+        return;
+      }
+      this.loading = true;
+      window._currentYears = parseInt(this.years);
+      try {
+        const res = await fetch("/api/optimize", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: parseInt(this.amount),
+            assets: this.selectedAssets,
+            years : parseInt(this.years)
+          })
+        });
+        const data = await res.json();
+        if (data.error) { this.error = data.error; return; }
+        window._currentAmount  = parseInt(this.amount);
+        window._currentAssets  = this.selectedAssets;
+        window._currentResults = data;
+        this.renderResults(data, parseInt(this.amount));
+      } catch(e) {
+        this.error = "Something went wrong. Please try again.";
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    groupByAssetClass(weights, amounts) {
+      const groups = {
+        "Equity"      : { weight: 0, amount: 0, color: "#6366f1" },
+        "Gold"        : { weight: 0, amount: 0, color: "#f59e0b" },
+        "Silver"      : { weight: 0, amount: 0, color: "#94a3b8" },
+        "ETF / MF"    : { weight: 0, amount: 0, color: "#8b5cf6" },
+        "Crypto"      : { weight: 0, amount: 0, color: "#f97316" },
+        "Real Estate" : { weight: 0, amount: 0, color: "#22c55e" },
+      };
+      for (const [ticker, wt] of Object.entries(weights || {})) {
+        const amt = amounts?.[ticker] || 0;
+        const t   = ticker.toUpperCase();
+        if      (t.startsWith("CRYPTO_"))       { groups["Crypto"].weight      += wt; groups["Crypto"].amount      += amt; }
+        else if (t.startsWith("ETF_"))          { groups["ETF / MF"].weight    += wt; groups["ETF / MF"].amount    += amt; }
+        else if (t.includes("GOLD"))            { groups["Gold"].weight         += wt; groups["Gold"].amount         += amt; }
+        else if (t.includes("SILVER"))          { groups["Silver"].weight       += wt; groups["Silver"].amount       += amt; }
+        else if (t.includes("EMBASSY") ||
+                t.includes("REALESTATE") ||
+                t.includes("REIT"))            { groups["Real Estate"].weight  += wt; groups["Real Estate"].amount  += amt; }
+        else                                    { groups["Equity"].weight       += wt; groups["Equity"].amount       += amt; }
+      }
+      return Object.entries(groups).filter(([_, g]) => g.weight > 0.001);
+    },
+
+    renderResults(data, totalAmount) {
+      const section = document.getElementById("results-section");
+      const cards   = document.getElementById("portfolio-cards");
+      section.classList.remove("hidden");
+      section.scrollIntoView({ behavior: "smooth" });
+
+      const styles = {
+        balanced:    { border: "#6366f1", label: "Balanced Portfolio"     },
+        high_return: { border: "#ef4444", label: "High Return Portfolio"  },
+        low_risk:    { border: "#22c55e", label: "Low Return Portfolio"   },
+      };
+
+      cards.innerHTML = "";
+
+      const ORDER = ["low_risk", "balanced", "high_return"];
+      for (const key of ORDER) {
+          const p = data[key];
+          if (!p) continue;
+          const s      = styles[key] || styles.balanced;
+          const groups = this.groupByAssetClass(p.weights, p.amounts);
+
+        const riskColor =
+          p.risk_label === "High Risk"   ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300" :
+          p.risk_label === "Medium Risk" ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300" :
+                                           "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300";
+
+        const groupRows = groups
+          .sort((a, b) => b[1].weight - a[1].weight)
+          .map(([name, g]) => `
+          <div class="flex items-center justify-between py-2.5 border-b border-gray-50 dark:border-slate-700 last:border-0">
+            <div class="flex items-center gap-2">
+              <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:${g.color}"></div>
+              <span class="text-sm text-gray-600 dark:text-gray-300">${name}</span>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-bold text-gray-800 dark:text-white">
+                Rs. ${Math.round(g.amount).toLocaleString("en-IN")}
+              </div>
+              <div class="text-xs text-gray-400">${(g.weight * 100).toFixed(1)}%</div>
+            </div>
+          </div>`).join("");
+
+        const barRows = groups.map(([name, g]) => `
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="text-xs text-gray-500 dark:text-gray-400 w-20 truncate">${name}</span>
+            <div class="flex-1 h-1.5 bg-gray-100 dark:bg-slate-600 rounded-full overflow-hidden">
+              <div class="h-1.5 rounded-full" style="width:${Math.min(g.weight*100*3.5,100)}%;background:${g.color}"></div>
+            </div>
+            <span class="text-xs font-semibold text-gray-600 dark:text-gray-300 w-8 text-right">
+              ${(g.weight*100).toFixed(0)}%
+            </span>
+          </div>`).join("");
+
+        cards.innerHTML += `
+          <div class="bg-white dark:bg-slate-800 rounded-2xl border-2 shadow-sm overflow-hidden flex flex-col"
+               style="border-color:${s.border}30">
+
+            <!-- Card header -->
+            <div class="p-5" style="background:${s.border}08">
+              <div class="flex items-start justify-between mb-3">
+                <h3 class="font-bold text-gray-800 dark:text-white text-base leading-tight">${p.label}</h3>
+                <span class="text-xs font-semibold px-2 py-1 rounded-full ml-2 flex-shrink-0 ${riskColor}">
+                  ${p.risk_label}
+                </span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="bg-white dark:bg-slate-700 rounded-lg p-2 text-center">
+                  <div class="text-xs text-gray-400 mb-0.5">Return</div>
+                  <div class="text-base font-bold text-green-600">${p.expected_return}%</div>
+                </div>
+                <div class="bg-white dark:bg-slate-700 rounded-lg p-2 text-center">
+                  <div class="text-xs text-gray-400 mb-0.5">Volatility</div>
+                  <div class="text-base font-bold text-gray-700 dark:text-gray-200">${p.volatility}%</div>
+                </div>
+                <div class="bg-white dark:bg-slate-700 rounded-lg p-2 text-center">
+                  <div class="text-xs text-gray-400 mb-0.5">Sharpe</div>
+                  <div class="text-base font-bold text-indigo-600">${p.sharpe_ratio}</div>
+                </div>
+              </div>
+            </div>
+            <!-- Add this inside the card header stats grid -->
+          <div class="bg-white dark:bg-slate-700 rounded-lg p-2 text-center col-span-3 mt-2">
+            <div class="text-xs text-gray-400 mb-0.5">
+              Projected Value in ${p.years} years
+            </div>
+            <div class="text-base font-bold text-indigo-600">
+              Rs. ${Math.round(p.projected_corpus).toLocaleString("en-IN")}
+            </div>
+            <div class="text-xs text-green-600">
+              Gain: Rs. ${Math.round(p.projected_gain).toLocaleString("en-IN")}
+            </div>
+          </div>
+            <!-- Total investment -->
+            <div class="px-5 py-3 border-y border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-750">
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Total Investment
+                </span>
+                <span class="text-sm font-bold text-gray-800 dark:text-white">
+                  Rs. ${totalAmount.toLocaleString("en-IN")}
+                </span>
+              </div>
+            </div>
+
+            <!-- Asset class allocation -->
+            <div class="px-5 pt-4 pb-2 flex-1">
+              <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                How your money is split
+              </p>
+              ${groupRows}
+            </div>
+
+            <!-- Visual bars -->
+            <div class="px-5 pb-4">
+              <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-3">
+                Allocation breakdown
+              </p>
+              ${barRows}
+            </div>
+            
+            <!-- Save button -->
+            <div class="px-5 pb-5">
+              <button onclick='savePortfolio("${key}", ${JSON.stringify(p)})'
+                      class="w-full py-2.5 text-sm font-semibold rounded-xl border-2 transition-all
+                             text-white hover:opacity-90"
+                      style="background:${s.border};border-color:${s.border}">
+                Save This Portfolio
+              </button>
+             </div>
+
+          </div>`;
+      }
+
+      // Efficient Frontier Chart
+      fetch("/api/frontier").then(r => r.json()).then(mc => {
+        const ctx = document.getElementById("frontierChart").getContext("2d");
+        if (window._frontierChart) window._frontierChart.destroy();
+        window._frontierChart = new Chart(ctx, {
+          type: "scatter",
+          data: {
+            datasets: [
+              {
+                label: "Random Portfolios",
+                data: mc.volatilities.map((v,i) => ({ x: v, y: mc.returns[i] })),
+                backgroundColor: "rgba(99,102,241,0.2)",
+                pointRadius: 3,
+              },
+              {
+                label: "Balanced",
+                data: [{ x: data.balanced?.volatility, y: data.balanced?.expected_return }],
+                backgroundColor: "#6366f1", pointRadius: 12, pointStyle: "star",
+              },
+              {
+                label: "High Return",
+                data: [{ x: data.high_return?.volatility, y: data.high_return?.expected_return }],
+                backgroundColor: "#ef4444", pointRadius: 12, pointStyle: "triangle",
+              },
+              {
+                label: "Low Risk",
+                data: [{ x: data.low_risk?.volatility, y: data.low_risk?.expected_return }],
+                backgroundColor: "#22c55e", pointRadius: 12, pointStyle: "circle",
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: "top" } },
+            scales: {
+              x: { title: { display: true, text: "Annual Volatility (%)" }},
+              y: { title: { display: true, text: "Annual Return (%)"    }}
+            }
+          }
+        });
+      });
+      window._allPortfolios = data;
+      document.getElementById("download-report-btn").style.display = "block";
+    }
+  }
+}
+
+async function savePortfolio(type, portfolio) {
+  const name = prompt("Name this portfolio:", portfolio.label);
+  if (!name) return;
+  try {
+    const res = await fetch("/api/save-portfolio", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type,
+        portfolio,
+        name,
+        amount : window._currentAmount || 500000,
+        assets : window._currentAssets || []
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert("Portfolio saved successfully. View it in your Dashboard.");
+    } else {
+      alert("Could not save portfolio. Please make sure you are logged in.");
+    }
+  } catch(e) {
+    alert("Error saving portfolio. Please try again.");
+  }
+}
+
+
+function openReportModal() {
+  document.getElementById("report-modal").classList.remove("hidden");
+}
+
+function closeReportModal() {
+  document.getElementById("report-modal").classList.add("hidden");
+  _reportPortfolio = null;
+}
+
+async function downloadReport() {
+  const clientName  = document.getElementById("client-name").value.trim()  || "Valued Client";
+  const advisorName = document.getElementById("advisor-name").value.trim() || "NextGen Advisor";
+
+  const btn = document.querySelector("#report-modal button:last-child");
+  btn.textContent = "Generating...";
+  btn.disabled    = true;
+
+  try {
+    const res = await fetch("/api/generate-report", {
+      method : "POST",
+      headers: { "Content-Type": "application/json" },
+      body   : JSON.stringify({
+        portfolios   : window._allPortfolios,
+        amount       : window._currentAmount || 500000,
+        years        : window._currentYears  || 5,
+        client_name  : clientName,
+        advisor_name : advisorName,
+      })
+    });
+
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = `NextGen_Report_${clientName.replace(/\s+/g,"_")}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+    closeReportModal();
+  } catch(e) {
+    alert("Could not generate report. Please try again.");
+  } finally {
+    btn.textContent = "Download PDF";
+    btn.disabled    = false;
+  }
+}
+
+
+</script>
+{% endblock %}
+{% endblock %}

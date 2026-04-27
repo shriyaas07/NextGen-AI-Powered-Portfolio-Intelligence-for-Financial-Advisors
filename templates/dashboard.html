@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — NextGen{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-12">
+  <div class="mb-8 flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-800 dark:text-white">
+        Welcome back, {{ current_user.name.split()[0] }} 
+      </h1>
+      <p class="text-gray-500 dark:text-gray-400 mt-1">Your saved portfolios and investment overview</p>
+    </div>
+    <a href="/optimizer"
+       class="px-5 py-2 gradient-bg text-white font-semibold rounded-xl hover:opacity-90 transition-opacity text-sm">
+      + New Portfolio
+    </a>
+  </div>
+
+  {% if portfolios %}
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for p in portfolios %}
+    {% set color = "indigo" if p.portfolio_type == "balanced" else ("red" if p.portfolio_type == "high_return" else "green") %}
+    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 card-hover">
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <h3 class="font-bold text-gray-800 dark:text-white">{{ p.name }}</h3>
+          <p class="text-xs text-gray-400 mt-0.5">{{ p.created_at.strftime("%d %b %Y") }}</p>
+        </div>
+        <span class="text-xs font-semibold px-2 py-1 bg-{{ color }}-100 text-{{ color }}-700 dark:bg-{{ color }}-900 dark:text-{{ color }}-300 rounded-full">
+          {{ p.risk_label }}
+        </span>
+      </div>
+      <div class="space-y-2 mb-4">
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500">Investment</span>
+          <span class="font-semibold text-gray-800 dark:text-white">₹{{ "{:,.0f}".format(p.amount) }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500">Expected Return</span>
+          <span class="font-semibold text-green-600">{{ p.expected_return }}% p.a.</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500">Sharpe Ratio</span>
+          <span class="font-semibold text-indigo-600">{{ p.sharpe_ratio }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500">Volatility</span>
+          <span class="font-semibold text-gray-800 dark:text-white">{{ p.volatility }}%</span>
+        </div>
+      </div>
+      <form method="POST" action="/api/portfolio/{{ p.id }}/delete"
+            onsubmit="return confirm('Delete this portfolio?')">
+        <button type="submit"
+                class="w-full py-2 border border-red-200 text-red-500 text-xs font-medium rounded-lg hover:bg-red-50 transition-colors">
+          Delete
+        </button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-20 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700">
+    <div class="text-6xl mb-4"></div>
+    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">No portfolios yet</h3>
+    <p class="text-gray-500 dark:text-gray-400 mb-6">Build your first optimized portfolio using our AI optimizer</p>
+    <a href="/optimizer"
+       class="px-8 py-3 gradient-bg text-white font-bold rounded-xl hover:opacity-90 transition-opacity inline-block">
+      Build Portfolio →
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

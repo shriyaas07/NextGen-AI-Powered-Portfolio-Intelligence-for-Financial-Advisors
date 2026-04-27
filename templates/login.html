@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Login — NextGen{% endblock %}
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 bg-gray-50 dark:bg-slate-900">
+  <div class="max-w-md w-full">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-slate-700">
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <span class="text-white font-bold text-2xl">NG</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Welcome </h2>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Login to your NextGen account</p>
+      </div>
+      <form method="POST" action="/login" class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+          <input type="email" name="email" required
+                 class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                 placeholder="you@example.com">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+          <input type="password" name="password" required
+                 class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                 placeholder="••••••••">
+        </div>
+        <button type="submit"
+                class="w-full py-3 gradient-bg text-white font-bold rounded-xl hover:opacity-90 transition-opacity">
+          Login →
+        </button>
+      </form>
+      <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
+        Don't have an account?
+        <a href="/signup" class="text-indigo-600 font-medium hover:underline">Sign up free</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,554 @@
+{% extends "base.html" %}
+{% block title %}Stock Screener — NextGen{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-12">
+
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">
+      Stock Screener
+    </h1>
+  </div>
+
+  <!-- About Panel -->
+<div class="text-right mb-6" x-data="{ open: false }">
+  <button @click="open = !open"
+          class="inline-flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">
+    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <span x-text="open ? 'Hide guide' : 'How does this work?'"></span>
+    <svg :class="open ? 'rotate-180' : ''" class="w-3 h-3 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+    </svg>
+  </button>
+
+  <div x-show="open" x-transition class="mt-4 text-left max-w-4xl mx-auto bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl p-6 shadow-sm space-y-5">
+
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-1">About this tool</p>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        A <strong class="text-gray-700 dark:text-gray-300">search engine for stocks</strong>. Instead of researching each company one by one, you set criteria  like "show me stocks that grew at least 15% per year and aren't too risky"  and it instantly filters all NIFTY 500 stocks. It also fetches <strong class="text-gray-700 dark:text-gray-300">live market prices</strong> and generates a <strong class="text-gray-700 dark:text-gray-300">Buy / Hold / Caution signal</strong> for each stock.
+      </p>
+    </div>
+
+    <div class="border-t border-gray-100 dark:border-slate-700 pt-4">
+      <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Key terms</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div class="flex gap-2">
+          <div class="w-1 rounded-full bg-indigo-300 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">Sharpe Ratio</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Return earned per unit of risk a "worth-it score." Above 1 is good, above 2 is great.</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-1 rounded-full bg-indigo-300 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">Volatility (%)</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">How wildly the stock's price moves. High = unpredictable. Low = steady and predictable.</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-1 rounded-full bg-indigo-300 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">Annual Return (%)</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Average yearly growth historically. 20% means Rs. 100 became Rs. 120 on average each year.</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-1 rounded-full bg-indigo-300 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">52W High / Low</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Highest and lowest price over the last 52 weeks. Shows where the stock sits in its yearly range.</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-1 rounded-full bg-indigo-300 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">Day Change (%)</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">How much the price moved today vs yesterday's close. Green = up, Red = down.</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-1 rounded-full bg-indigo-300 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">Signal</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Auto-generated from Sharpe, return, and day change. A quick data snapshot not financial advice.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-100 dark:border-slate-700 pt-4">
+      <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">How to use</p>
+      <ol class="space-y-2">
+        <li class="flex gap-3 text-xs text-gray-500 dark:text-gray-400">
+          <span class="w-5 h-5 rounded-full bg-indigo-50 dark:bg-indigo-900 text-indigo-500 font-bold flex items-center justify-center flex-shrink-0">1</span>
+          <span><strong class="text-gray-600 dark:text-gray-300">Set your filters</strong> — Min Sharpe, Max Volatility, Min Annual Return. Leave as defaults to see all stocks.</span>
+        </li>
+        <li class="flex gap-3 text-xs text-gray-500 dark:text-gray-400">
+          <span class="w-5 h-5 rounded-full bg-indigo-50 dark:bg-indigo-900 text-indigo-500 font-bold flex items-center justify-center flex-shrink-0">2</span>
+          <span><strong class="text-gray-600 dark:text-gray-300">Choose how to sort</strong> — by Sharpe for most efficient stocks, or by Annual Return for top performers.</span>
+        </li>
+        <li class="flex gap-3 text-xs text-gray-500 dark:text-gray-400">
+          <span class="w-5 h-5 rounded-full bg-indigo-50 dark:bg-indigo-900 text-indigo-500 font-bold flex items-center justify-center flex-shrink-0">3</span>
+          <span><strong class="text-gray-600 dark:text-gray-300">Click "Apply Filters"</strong> — the table loads matching stocks and starts fetching live prices automatically.</span>
+        </li>
+        <li class="flex gap-3 text-xs text-gray-500 dark:text-gray-400">
+          <span class="w-5 h-5 rounded-full bg-indigo-50 dark:bg-indigo-900 text-indigo-500 font-bold flex items-center justify-center flex-shrink-0">4</span>
+          <span><strong class="text-gray-600 dark:text-gray-300">Click any row</strong> — to instantly refresh that stock's live price from the exchange.</span>
+        </li>
+        <li class="flex gap-3 text-xs text-gray-500 dark:text-gray-400">
+          <span class="w-5 h-5 rounded-full bg-indigo-50 dark:bg-indigo-900 text-indigo-500 font-bold flex items-center justify-center flex-shrink-0">5</span>
+          <span><strong class="text-gray-600 dark:text-gray-300">Use "Refresh Live Prices"</strong> — to update all visible stocks at once.</span>
+        </li>
+      </ol>
+    </div>
+
+    <p class="text-xs text-gray-400 border-t border-gray-100 dark:border-slate-700 pt-3">Signals are algorithm-generated for educational purposes. Always research independently before investing. Live prices may be delayed.</p>
+  </div>
+</div>
+  <!-- Filters -->
+  <div class="bg-white dark:bg-slate-800 rounded-2xl p-6
+              border border-gray-100 dark:border-slate-700 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-xs font-semibold text-gray-600
+                      dark:text-gray-400 mb-1 uppercase tracking-wider">
+          Min Sharpe Ratio
+        </label>
+        <input type="number" id="min-sharpe" value="0.5" step="0.1"
+               class="w-full px-3 py-2 rounded-lg border
+                      border-gray-200 dark:border-slate-600
+                      bg-gray-50 dark:bg-slate-700 text-sm
+                      text-gray-800 dark:text-white
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-gray-600
+                      dark:text-gray-400 mb-1 uppercase tracking-wider">
+          Max Volatility (%)
+        </label>
+        <input type="number" id="max-vol" value="50" step="5"
+               class="w-full px-3 py-2 rounded-lg border
+                      border-gray-200 dark:border-slate-600
+                      bg-gray-50 dark:bg-slate-700 text-sm
+                      text-gray-800 dark:text-white
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-gray-600
+                      dark:text-gray-400 mb-1 uppercase tracking-wider">
+          Min Annual Return (%)
+        </label>
+        <input type="number" id="min-return" value="0" step="5"
+               class="w-full px-3 py-2 rounded-lg border
+                      border-gray-200 dark:border-slate-600
+                      bg-gray-50 dark:bg-slate-700 text-sm
+                      text-gray-800 dark:text-white
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-gray-600
+                      dark:text-gray-400 mb-1 uppercase tracking-wider">
+          Sort By
+        </label>
+        <select id="sort-by"
+                class="w-full px-3 py-2 rounded-lg border
+                       border-gray-200 dark:border-slate-600
+                       bg-gray-50 dark:bg-slate-700 text-sm
+                       text-gray-800 dark:text-white
+                       focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <option value="sharpe">Sharpe Ratio</option>
+          <option value="return">Annual Return</option>
+          <option value="vol">Volatility (Low → High)</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-4">
+      <button onclick="loadScreener()"
+              class="px-6 py-2 gradient-bg text-white font-semibold
+                     rounded-lg text-sm hover:opacity-90 transition-opacity">
+        Apply Filters
+      </button>
+      <button onclick="loadAllLivePrices()"
+              class="px-6 py-2 border border-indigo-400 text-indigo-600
+                     dark:text-indigo-400 font-semibold rounded-lg text-sm
+                     hover:bg-indigo-50 dark:hover:bg-indigo-900
+                     transition-colors">
+        Refresh Live Prices
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div id="stats-bar"
+       class="grid grid-cols-3 gap-4 mb-6 hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-xl p-4
+                border border-gray-100 dark:border-slate-700 text-center">
+      <div class="text-2xl font-bold text-indigo-600"
+           id="stat-count">0</div>
+      <div class="text-xs text-gray-500 mt-1">Stocks Found</div>
+    </div>
+    <div class="bg-white dark:bg-slate-800 rounded-xl p-4
+                border border-gray-100 dark:border-slate-700 text-center">
+      <div class="text-2xl font-bold text-green-600"
+           id="stat-avg-return">0%</div>
+      <div class="text-xs text-gray-500 mt-1">Avg Annual Return</div>
+    </div>
+    <div class="bg-white dark:bg-slate-800 rounded-xl p-4
+                border border-gray-100 dark:border-slate-700 text-center">
+      <div class="text-2xl font-bold text-purple-600"
+           id="stat-avg-sharpe">0</div>
+      <div class="text-xs text-gray-500 mt-1">Avg Sharpe Ratio</div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="bg-white dark:bg-slate-800 rounded-2xl
+              border border-gray-100 dark:border-slate-700 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 dark:bg-slate-700">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-semibold
+                       text-gray-500 dark:text-gray-400
+                       uppercase tracking-wider">
+              Stock
+            </th>
+            <th class="px-4 py-3 text-right text-xs font-semibold
+                       text-gray-500 dark:text-gray-400
+                       uppercase tracking-wider">
+              Live Price
+            </th>
+            <th class="px-4 py-3 text-right text-xs font-semibold
+                       text-gray-500 dark:text-gray-400
+                       uppercase tracking-wider">
+              Day Change
+            </th>
+            <th class="px-4 py-3 text-right text-xs font-semibold
+                       text-gray-500 dark:text-gray-400
+                       uppercase tracking-wider">
+              Annual Return
+            </th>
+            <th class="px-4 py-3 text-right text-xs font-semibold
+                       text-gray-500 dark:text-gray-400
+                       uppercase tracking-wider">
+              Volatility
+            </th>
+            <th class="px-4 py-3 text-right text-xs font-semibold
+                       text-gray-500 dark:text-gray-400
+                       uppercase tracking-wider">
+              Sharpe
+            </th>
+            <th class="px-4 py-3 text-right text-xs font-semibold
+                       text-gray-500 dark:text-gray-400
+                       uppercase tracking-wider">
+              52W High
+            </th>
+            <th class="px-4 py-3 text-right text-xs font-semibold
+                       text-gray-500 dark:text-gray-400
+                       uppercase tracking-wider">
+              52W Low
+            </th>
+            <th class="px-4 py-3 text-center text-xs font-semibold
+                       text-gray-500 dark:text-gray-400
+                       uppercase tracking-wider">
+              Signal
+            </th>
+          </tr>
+        </thead>
+        <tbody id="screener-body"
+               class="divide-y divide-gray-100 dark:divide-slate-700">
+          <tr>
+            <td colspan="9"
+                class="px-4 py-12 text-center text-gray-400">
+              Apply filters to load stocks
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p id="screener-count"
+     class="text-xs text-gray-400 mt-2 text-right"></p>
+</div>
+
+{% block scripts %}
+<script>
+let screenerData   = [];
+let liveCache      = {};
+
+// ── Signal logic ──────────────────────────────────────────────
+function getSignal(sharpe, annualReturn, dayChange) {
+  if (sharpe > 1.0 && annualReturn > 0.15 && dayChange > 0) {
+    return { label: "Strong Buy", color: "green" };
+  } else if (sharpe > 0.5 && annualReturn > 0.08) {
+    return { label: "Buy",        color: "teal"  };
+  } else if (sharpe > 0 && annualReturn > 0) {
+    return { label: "Hold",       color: "yellow"};
+  } else {
+    return { label: "Caution",    color: "red"   };
+  }
+}
+
+function signalBadge(signal) {
+  const colors = {
+    green : "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
+    teal  : "bg-teal-100  text-teal-700  dark:bg-teal-900  dark:text-teal-300",
+    yellow: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300",
+    red   : "bg-red-100   text-red-700   dark:bg-red-900   dark:text-red-300",
+  };
+  return `<span class="px-2 py-0.5 rounded-full text-xs font-semibold
+                        ${colors[signal.color]}">
+            ${signal.label}
+          </span>`;
+}
+
+// ── Load screener data ────────────────────────────────────────
+async function loadScreener() {
+  const minSharpe  = document.getElementById("min-sharpe").value;
+  const maxVol     = document.getElementById("max-vol").value / 100;
+  const minReturn  = document.getElementById("min-return").value / 100;
+  const sortBy     = document.getElementById("sort-by").value;
+  const tbody      = document.getElementById("screener-body");
+
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="9"
+          class="px-4 py-12 text-center text-gray-400">
+        Loading stocks...
+      </td>
+    </tr>`;
+
+  const res  = await fetch(
+    `/api/screener?min_sharpe=${minSharpe}` +
+    `&max_vol=${maxVol}&min_return=${minReturn}`);
+  const data = await res.json();
+
+  // Sort
+  if (sortBy === "return") {
+    data.sort((a, b) => b.annual_return - a.annual_return);
+  } else if (sortBy === "vol") {
+    data.sort((a, b) => a.annual_vol - b.annual_vol);
+  } else {
+    data.sort((a, b) => b.sharpe_ratio - a.sharpe_ratio);
+  }
+
+  screenerData = data;
+
+  // Update stats
+  if (data.length > 0) {
+    document.getElementById("stats-bar").classList.remove("hidden");
+    document.getElementById("stat-count").textContent = data.length;
+    const avgRet = data.reduce(
+        (s, r) => s + r.annual_return, 0) / data.length;
+    const avgSh  = data.reduce(
+        (s, r) => s + r.sharpe_ratio, 0) / data.length;
+    document.getElementById("stat-avg-return").textContent =
+        (avgRet * 100).toFixed(1) + "%";
+    document.getElementById("stat-avg-sharpe").textContent =
+        avgSh.toFixed(2);
+  }
+
+  document.getElementById("screener-count").textContent =
+    `Showing ${data.length} stocks`;
+
+  if (!data.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9"
+            class="px-4 py-8 text-center text-gray-400">
+          No stocks match your filters.
+        </td>
+      </tr>`;
+    return;
+  }
+
+  renderTable(data);
+
+  // Auto-fetch live prices for top 20
+  const allTickers = data.map(s => s.index);
+  fetchLiveBatch(allTickers);
+}
+
+// ── Render table ──────────────────────────────────────────────
+function renderTable(data) {
+  const tbody = document.getElementById("screener-body");
+
+  tbody.innerHTML = data.map(s => {
+    const ticker   = String(s.index || "");
+    const name     = ticker.replace(".NS","").replace("_"," ");
+    const ret      = (s.annual_return * 100).toFixed(1);
+    const vol      = (s.annual_vol    * 100).toFixed(1);
+    const sharpe   = s.sharpe_ratio.toFixed(2);
+    const retColor = parseFloat(ret) >= 0
+        ? "text-green-600 font-semibold"
+        : "text-red-500 font-semibold";
+
+    // Live data (from cache if available)
+    const live     = liveCache[ticker];
+    const price = live
+      ? (live.current_price > 0
+          ? `Rs. ${live.current_price.toLocaleString("en-IN")}`
+          : `<span class="text-gray-400 text-xs">N/A</span>`)
+      : `<span class="text-gray-300 text-xs">Loading...</span>`;
+    const dayChg   = live
+        ? (live.day_change_pct >= 0
+            ? `<span class="text-green-600">
+                 +${live.day_change_pct.toFixed(2)}%
+               </span>`
+            : `<span class="text-red-500">
+                 ${live.day_change_pct.toFixed(2)}%
+               </span>`)
+        : `<span class="text-gray-300 text-xs">—</span>`;
+    const high52   = live
+        ? `Rs. ${live.week_52_high.toLocaleString("en-IN")}`
+        : "—";
+    const low52    = live
+        ? `Rs. ${live.week_52_low.toLocaleString("en-IN")}`
+        : "—";
+
+    const dayChgNum = live ? live.day_change_pct : 0;
+    const signal    = getSignal(
+        parseFloat(sharpe),
+        s.annual_return,
+        dayChgNum);
+
+    return `
+      <tr class="hover:bg-gray-50 dark:hover:bg-slate-700
+                 transition-colors cursor-pointer"
+          id="row-${ticker.replace(".","_")}"
+          onclick="fetchLiveSingle('${ticker}')">
+        <td class="px-4 py-3">
+          <div class="font-semibold text-indigo-600
+                      dark:text-indigo-400 text-sm">
+            ${name}
+          </div>
+          <div class="text-xs text-gray-400">${ticker}</div>
+        </td>
+        <td class="px-4 py-3 text-right font-mono text-sm
+                   text-gray-800 dark:text-white"
+            id="price-${ticker.replace(".","_")}">
+          ${price}
+        </td>
+        <td class="px-4 py-3 text-right text-sm"
+            id="chg-${ticker.replace(".","_")}">
+          ${dayChg}
+        </td>
+        <td class="px-4 py-3 text-right ${retColor}">${ret}%</td>
+        <td class="px-4 py-3 text-right
+                   text-gray-600 dark:text-gray-300">${vol}%</td>
+        <td class="px-4 py-3 text-right">
+          <span class="px-2 py-0.5 rounded-full text-xs font-semibold
+            ${parseFloat(sharpe) > 1
+                ? 'bg-green-100 text-green-700'
+                : parseFloat(sharpe) > 0
+                ? 'bg-yellow-100 text-yellow-700'
+                : 'bg-red-100 text-red-700'}">
+            ${sharpe}
+          </span>
+        </td>
+        <td class="px-4 py-3 text-right text-xs
+                   text-gray-500 dark:text-gray-400"
+            id="h52-${ticker.replace(".","_")}">
+          ${high52}
+        </td>
+        <td class="px-4 py-3 text-right text-xs
+                   text-gray-500 dark:text-gray-400"
+            id="l52-${ticker.replace(".","_")}">
+          ${low52}
+        </td>
+        <td class="px-4 py-3 text-center"
+            id="sig-${ticker.replace(".","_")}">
+          ${signalBadge(signal)}
+        </td>
+      </tr>`;
+  }).join("");
+}
+
+// ── Fetch live price for single stock ─────────────────────────
+async function fetchLiveSingle(ticker) {
+  try {
+    const res  = await fetch(`/api/screener/live/${ticker}`);
+    const data = await res.json();
+    if (data.error) return;
+
+    liveCache[ticker] = data;
+    updateRow(ticker, data);
+  } catch(e) {
+    console.log("Live fetch failed:", e);
+  }
+}
+
+// ── Fetch live prices for a batch ─────────────────────────────
+async function fetchLiveBatch(tickers) {
+  // Fetch in parallel — max 5 at a time to avoid rate limits
+  const chunks = [];
+  for (let i = 0; i < tickers.length; i += 5) {
+    chunks.push(tickers.slice(i, i + 5));
+  }
+  for (const chunk of chunks) {
+    await Promise.all(chunk.map(t => fetchLiveSingle(t)));
+    await new Promise(r => setTimeout(r, 300)); // small delay
+  }
+}
+
+// ── Load live prices for all visible stocks ───────────────────
+async function loadAllLivePrices() {
+  const tickers = screenerData.map(s => String(s.index));
+  document.getElementById("screener-count").textContent =
+    `Fetching live prices for ${tickers.length} stocks...`;
+  await fetchLiveBatch(tickers);
+  document.getElementById("screener-count").textContent =
+    `Showing ${tickers.length} stocks — live prices updated`;
+}
+
+// ── Update a single row with live data ────────────────────────
+function updateRow(ticker, live) {
+  const id   = ticker.replace(".", "_");
+  const prEl = document.getElementById(`price-${id}`);
+  const chEl = document.getElementById(`chg-${id}`);
+  const h52  = document.getElementById(`h52-${id}`);
+  const l52  = document.getElementById(`l52-${id}`);
+  const sig  = document.getElementById(`sig-${id}`);
+
+  if (prEl) {
+    prEl.innerHTML = live.current_price > 0
+        ? `Rs. ${live.current_price.toLocaleString("en-IN")}`
+        : `<span class="text-gray-400 text-xs">N/A</span>`;
+}
+
+  if (chEl) {
+    if (live.current_price === 0 || live.day_change_pct === -100) {
+        chEl.innerHTML = `<span class="text-gray-400 text-xs">N/A</span>`;
+    } else {
+        const positive = live.day_change_pct >= 0;
+        chEl.innerHTML = positive
+            ? `<span class="text-green-600 font-semibold">+${live.day_change_pct.toFixed(2)}%</span>`
+            : `<span class="text-red-500 font-semibold">${live.day_change_pct.toFixed(2)}%</span>`;
+    }
+}
+
+  if (h52) h52.textContent =
+    `Rs. ${live.week_52_high.toLocaleString("en-IN")}`;
+  if (l52) l52.textContent =
+    `Rs. ${live.week_52_low.toLocaleString("en-IN")}`;
+
+  // Update signal with live day change
+  if (sig) {
+    const row    = screenerData.find(
+        s => String(s.index) === ticker);
+    const signal = row
+      ? getSignal(row.sharpe_ratio, row.annual_return,
+                  live.day_change_pct)
+      : getSignal(0, 0, live.day_change_pct);
+    sig.innerHTML = signalBadge(signal);
+  }
+}
+
+// Auto-load on page open
+loadScreener();
+</script>
+{% endblock %}
+{% endblock %}
