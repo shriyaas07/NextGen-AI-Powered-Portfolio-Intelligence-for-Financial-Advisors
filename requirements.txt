@@ -11,3 +11,4 @@ pytz
 reportlab
 gunicorn
 python-dotenv
+cvxpy==1.4.2
