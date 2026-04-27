@@ -2,13 +2,11 @@ flask
 flask-login
 flask-sqlalchemy
 werkzeug
-
 numpy==1.26.4
 scipy==1.11.4
 pandas==2.2.2
-
 cvxpy==1.4.2
-
+PyPortfolioOpt==1.5.5
 yfinance
 newsapi-python
 pytz
