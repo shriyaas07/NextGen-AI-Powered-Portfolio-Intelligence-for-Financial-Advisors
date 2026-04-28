@@ -151,6 +151,15 @@ def run_optimizer(amount, selected_assets=None, years=5):
         if not tickers:
             return {"error": "No valid assets found."}
 
+        # Cap equity to 80 stocks to prevent memory crash on free hosting
+        import random
+        random.seed(42)
+        equity_tickers  = [t for t in tickers if identify_asset_class(t) == "equity"]
+        other_tickers   = [t for t in tickers if identify_asset_class(t) != "equity"]
+        if len(equity_tickers) > 80:
+            equity_tickers = random.sample(equity_tickers, 80)
+        tickers = other_tickers + equity_tickers
+
         df = prepare_returns(tickers)
         if df.shape[1] < 2:
             return {"error": "Need at least 2 valid assets."}
