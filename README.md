@@ -49,6 +49,12 @@ NextGen is a decision-support tool designed for use by financial professionals a
 
 ---
 
+## Live App
+https://nextgen-ai-powered-portfolio.onrender.com/
+
+---
+
+
 ## Author
 Shriyaa Srivastav 
 
