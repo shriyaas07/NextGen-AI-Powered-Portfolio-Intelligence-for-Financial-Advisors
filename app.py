@@ -15,7 +15,10 @@ load_dotenv()
 # ── App setup ─────────────────────────────────────────────────
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "nextgen_secret_key_2026")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(os.path.abspath(os.path.dirname(__file__)), "nextgen.db")
+DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///nextgen.db")
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # ── Extensions ────────────────────────────────────────────────
